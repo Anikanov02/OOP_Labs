@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin PortfolioClone</title>
+    <script src="/no_react_static/js/jquery-3.1.0.min.js"></script>
+</head>
+<body>
+<h2>Admin Panel</h2>
+<div>
+    <table>
+        <tr>
+            <td width="80%">
+                <div>
+                    <ul>
+                        <b>Instance State</b>
+                        <li th:text="${'Cloning enabled: ' + systemState.isCloningEnabled}"></li>
+                        <li>PUT <span>/rest/admin/pause</span>
+                            <input id="pauseInput" size="5"/>
+                            <button onclick="sendReq('PUT', '/rest/admin/pause?enabled={0}', getTextById('pauseInput'))">Cloning enabled</button>
+                        </li>
+                        <li>PUT <span>/rest/admin/producer/{producerId}/status</span>
+                            <input id="pauseProducerId" size="5"/>
+                            <input id="pauseProducerStatus" size="5"/>
+                            <button onclick="sendReq('PUT', '/rest/admin/producer/{0}/status?enabled={1}', getTextById('pauseProducerId'), getTextById('pauseProducerStatus'))">Cloning enabled</button>
+                        </li>
+                        <br/>
+                        <b>Management</b>
+                        <li>POST <span>/rest/admin/restart</span>
+                            <button onclick="sendReq('POST', '/rest/admin/restart')">restart</button>
+                        </li>
+                        <li>POST <span>/rest/admin/restart/{userLogin}</span>
+                            <input id="restartInput" size="5"/>
+                            <button onclick="sendReq('POST', '/rest/admin/restart/{0}', getTextById('restartInput'))">restart</button>
+                        </li>
+                        <li>PUT <span>/rest/admin/user/{userId}/balance</span>
+                            <input id="PutBalanceInput" size="5"/>
+                            <button onclick="sendReq('PUT', '/rest/admin/user/{0}/balance', getTextById('PutBalanceInput'))">load</button>
+                        </li>
+                        <li><a href="/rest/admin/terminal">Trade Terminal</a></li>
+                        <hr/>
+                        <b>Observability</b>
+                        <li>GET <span>/rest/v1/user/{userId}/balance</span>
+                            <input id="GetBalanceInput" size="5"/>
+                            <button onclick="redirectTo('/rest/v1/user/{0}/balance', getTextById('GetBalanceInput'))">show</button>
+                        </li>
+                        <hr/>
+                        <b>Users</b>
+                        <li>GET <a href="/rest/admin/core/producer">/rest/admin/core/producer</a></li>
+                        <li>GET <span>/rest/admin/core/producer/</span>
+                            <input id="producerInput" size="5"/>
+                            <button onclick="redirectTo('/rest/admin/core/producer/{0}', getTextById('producerInput'))">show</button>
+                        </li>
+                        <li>GET <span>/rest/v1/user/producer/{userId}/subscription</span>
+                            <input id="prodSubscribersInput" size="5"/>
+                            <button onclick="redirectTo('/rest/v1/user/producer/{0}/subscription', getTextById('prodSubscribersInput'))">show</button>
+                        </li>
+                        <li>GET <a href="/rest/admin/core/consumer">/rest/admin/core/consumer</a></li>
+                        <li>GET <span>/rest/admin/core/consumer/{userId}</span>
+                            <input id="consumerInput" size="5"/>
+                            <button onclick="redirectTo('/rest/admin/core/consumer/{0}', getTextById('consumerInput'))">show</button>
+                        </li>
+                        <li>PUT /rest/user/producer/<input id="updateStatusProdInput" size="5"/>/subscriber/<input
+                                id="updateStatusConsInput" size="5"/>/status?isEnabled=<input id="updateStatusInput" size="5"/>
+                            <button onclick="updateTradingStatus('PUT','/rest/v1/user/producer/{0}/subscription/{1}', getTextById('updateStatusInput') ,
+                            getTextById('updateStatusProdInput'),
+                            getTextById('updateStatusConsInput'))">update</button>
+                        </li>
+                        <li>POST /rest/v1/user/producer/<input id="newSubTraderId" size="5"/>
+                            /subscription/<input id="newSubId" size="5"/>
+                            <br/>
+                            <input type="checkbox" id="isEnabled"/>
+                            <label for="isEnabled">isEnabled</label>
+                            <input type="checkbox" id="spotEnabled"/>
+                            <label for="spotEnabled">spotEnabled</label>
+                            <input type="checkbox" id="futuresEnabled"/>
+                            <label for="futuresEnabled">futuresEnabled</label>
+                            <input type="checkbox" id="spotConvertEnabled"/>
+                            <label for="spotConvertEnabled">spotConvertEnabled</label>
+                            <input type="checkbox" id="transferEnabled"/>
+                            <label for="transferEnabled">transferEnabled</label>
+                            <input type="text" id="subscriptionType"/>
+                            <label for="subscriptionType">subscriptionType</label>
+                            <br/>
+                            <button onclick="createNewSubscription('POST',
+                                isChecked('isEnabled'),
+                                isChecked('spotEnabled'),
+                                isChecked('futuresEnabled'),
+                                isChecked('spotConvertEnabled'),
+                                isChecked('transferEnabled'),
+                                getTextById('subscriptionType'),
+                                '/rest/v1/user/producer/{0}/subscription/{1}',
+                                getTextById('newSubTraderId'),
+                                getTextById('newSubId'))">create subscription</button>
+                        </li>
+                        <li>DELETE /rest/v1/user/producer/<input id="delSubTraderId" size="5"/>
+                            /subscription/<input id="delSubId" size="5"/>
+                            <button onclick="sendReq('DELETE', '/rest/v1/user/producer/{0}/subscription/{1}',
+                            getTextById('delSubTraderId'), getTextById('delSubId'))">delete subscription</button>
+                        </li>
+                        <li>DELETE /rest/v1/user/<input id="delUserId" size="5"/>
+                            <button onclick="sendReq('DELETE', '/rest/v1/user/{0}',
+                            getTextById('delUserId'))">delete user</button>
+                        </li>
+                    </ul>
+                </div>
+            </td>
+            <td>
+                <div>
+                    <b>Producers</b>
+                    <div>
+                        <ul th:each="prod: ${producers}">
+                            <li th:text="${prod.login + ' :: ' + prod.id}"></li>
+                        </ul>
+                    </div>
+                    <hr>
+                    <b>Consumers</b>
+                    <div>
+                        <ul th:each="cons: ${consumers}">
+                            <li th:text="${cons.login + ' :: ' + cons.id}"></li>
+                        </ul>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+</body>
+<script src="js/utils.js"></script>
+<script>
+    function redirectTo(urlWithPlaceholder, ...params) {
+        let url = urlWithPlaceholder.format(params);
+        window.location.href = url;
+    }
+
+    function sendReq(method, urlWithPlaceholder, ...params) {
+        let url = urlWithPlaceholder.format(...params);
+        $.ajax({
+            url: url,
+            type: method,
+            success: function (result) {
+                alert(`${method} call to ${url} succeeded!`);
+            },
+            error: function (jqXhr, textStatus, errorMessage){
+                console.log(`${method} ${url} Error: ${jqXhr} ${textStatus} ${errorMessage}`);
+                alert(`${method} call to ${url} failed!${textStatus} ${errorMessage}`);
+            }
+        });
+    }
+
+    function updateTradingStatus(method, urlWithPlaceholder, isEnabled, ...params) {
+        let url = urlWithPlaceholder.format(...params);
+        $.ajax({
+            url: url,
+            type: method,
+            data: JSON.stringify({
+                isEnabled: isEnabled === 'true'
+            }),
+            contentType: "application/json",
+            dataType: "json",
+            success: function (result) {
+                alert(`${method} call to ${url} succeeded!`);
+            },
+            error: function (jqXhr, textStatus, errorMessage){
+                console.log(`${method} ${url} Error: ${jqXhr} ${textStatus} ${errorMessage}`);
+                alert(`${method} call to ${url} failed!${textStatus} ${errorMessage}`);
+            }
+        });
+    }
+
+    function createNewSubscription(method, isEnabled, spotEnabled, futuresEnabled, spotConvertEnabled, transferEnabled, subscriptionType, urlWithPlaceholder, ...params) {
+        let url = urlWithPlaceholder.format(...params);
+        $.ajax({
+            url: url,
+            type: method,
+            data: JSON.stringify({
+                isEnabled: isEnabled,
+                spotEnabled: spotEnabled,
+                futuresEnabled: futuresEnabled,
+                spotConvertEnabled: spotConvertEnabled,
+                transferEnabled: transferEnabled,
+                subscriptionType: subscriptionType
+            }),
+            contentType: "application/json",
+            dataType: "json",
+            success: function (result) {
+                alert(`${method} call to ${url} succeeded!`);
+            },
+            error: function (jqXhr, textStatus, errorMessage){
+                console.log(`${method} ${url} Error: ${jqXhr} ${textStatus} ${errorMessage}`);
+                alert(`${method} call to ${url} failed!${textStatus} ${errorMessage}`);
+            }
+        });
+    }
+
+    function getTextById(elementId) {
+        return $("#" + elementId).val();
+    }
+
+    function isChecked(elementId) {
+        return $("#" + elementId).is(':checked');
+    }
+
+    function init() {
+        if (!String.prototype.format) {
+            String.prototype.format = function () {
+                var args = arguments;
+                return this.replace(/{(\d+)}/g, function (match, number) {
+                    return typeof args[number] != 'undefined' ?
+                        args[number] : match;
+                });
+            };
+        }
+    }
+
+    init();
+</script>
+</html>

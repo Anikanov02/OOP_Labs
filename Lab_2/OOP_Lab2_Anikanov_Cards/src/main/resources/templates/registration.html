@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration Page</title>
+    <script src="/no_react_static/js/jquery-3.1.0.min.js"></script>
+</head>
+<body>
+<h2>Registration</h2>
+<div>
+    <b>First Name</b>
+    <input id="firstname" type="text"/>
+    <b>Last Name</b>
+    <input id="lastname" type="text"/>
+    <b>Phone Number</b>
+    <input id="phone" type="text"/>
+    <b>Login</b>
+    <input id="loginField" type="text"/>
+    <b>Username</b>
+    <input id="username" type="text"/>
+    <b>Password</b>
+    <input id="passwordField" type="password"/>
+    <b>Confirm Password</b>
+    <input id="confirmPassword" type="password"/>
+    <button id="submitButton" onclick="sendReq('POST', '/api/v1/users/login', getTextById('loginField'), getTextById('passwordField'))">Register</button>
+    <button id="openLoginPage" onclick="redirectTo('api/v1/ui/login')">Sign In</button>
+</div>
+</body>
+<script src="js/utils.js"></script>
+</html>

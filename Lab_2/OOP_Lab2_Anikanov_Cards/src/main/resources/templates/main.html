@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Main Page</title>
+    <script src="/no_react_static/js/jquery-3.1.0.min.js"></script>
+    <style>
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .item {
+            width: 20%;
+            height: 100px;
+            background-color: lightblue;
+            margin: 10px;
+        }
+
+        .top,
+        .bottom,
+        .center {
+            width: 100%;
+        }
+
+        .center {
+            flex-basis: 100%;
+        }
+
+
+
+    </style>
+</head>
+<body>
+<h2 class="center">Home page</h2>
+
+<div class="container">
+    <div class="item top">
+        <span>Card Service</span>
+    </div>
+    <form class="item center" th:object="${userDto}">
+        <h3>Edit user data</h3>
+        <br/>
+        First name
+        <br/>
+        <input type="text" th:field="*{firstName}"/>
+        <div style="color:red" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">Error text</div>
+        <br/>
+        Last name
+        <br/>
+        <input type="text" th:field="*{lastName}"/>
+        <div style="color:red" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">Error text</div>
+        <br/>
+        Password
+        <br/>
+        <input type="text" th:field="*{password}"/>
+        <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error text</div>
+        <br/>
+        Username
+        <br/>
+        <input type="text" th:field="*{username}"/>
+        <div style="color:red" th:if="${#fields.hasErrors('userLogins')}" th:errors="*{username}">Error text</div>
+        <br/>
+        <input th:type="submit" value="Update"/>
+        <span style="color:red" th:text="${message}">Error text</span>
+    </form>
+    <form class="item center" th:object="${paymentDto}">
+        <h3>Execute payment</h3>
+        <br/>
+        Amount
+        <br/>
+        <input type="text" th:field="*{amount}"/>
+        <div style="color:red" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">Error text</div>
+        <br/>
+        Pay fee
+        <br/>
+        <input type="text" th:field="*{fee}"/>
+        <div style="color:red" th:if="${#fields.hasErrors('fee')}" th:errors="*{fee}">Error text</div>
+        <br/>
+        Destination
+        <br/>
+        <input type="text" th:field="*{destination}"/>
+        <div style="color:red" th:if="${#fields.hasErrors('destination')}" th:errors="*{destination}">Error text</div>
+        <br/>
+        <input th:type="submit" value="Send"/>
+        <span style="color:red" th:text="${message}">Error text</span>
+    </form>
+    <div class="item center" th:object="${payments}">
+        <h3>Payments</h3>
+        <ul>
+            <li th:each="item : ${payments}" th:text="${item}"></li>
+        </ul>
+    </div>
+    <div class="item bottom">
+        <span>Anikanov Oleksandr</span>
+    </div>
+</div>
+
+<script src="js/utils.js"></script>
+</body>
+</html>

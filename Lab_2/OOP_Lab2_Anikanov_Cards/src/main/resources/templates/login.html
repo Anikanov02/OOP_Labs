@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Page</title>
+    <script src="/no_react_static/js/jquery-3.1.0.min.js"></script>
+</head>
+<body>
+<h2>Login</h2>
+<div>
+    <input id="loginField" type="text"/>
+    <input id="passwordField" type="password"/>
+    <button id="submitButton" onclick="sendReq('POST', '/api/v1/users/login', getTextById('loginField'), getTextById('passwordField'))">Log in</button>
+    <button id="openLoginPage" onclick="redirectTo('api/v1/ui/registration')">Sign Up</button>
+</div>
+</body>
+<script src="js/utils.js"></script>
+</html>
